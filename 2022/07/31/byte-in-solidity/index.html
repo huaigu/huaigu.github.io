@@ -28,7 +28,7 @@
 <meta property="og:description" content="Big-Endian and Little-Endian 字符串、bytes采用Big-Endian格式 例如”abcd”，会被存储为 10x6162636400000000000000000000000000000000000000000000000000000000   uint, address等采用Little-Endian格式 例如uint256 i &#x3D; 1, 会被存储为 10x0000">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-07-31T04:20:06.000Z">
-<meta property="article:modified_time" content="2022-07-31T12:07:54.664Z">
+<meta property="article:modified_time" content="2022-07-31T13:28:12.553Z">
 <meta property="article:author" content="Chao Wang">
 <meta property="article:tag" content="bytes, solidity">
 <meta name="twitter:card" content="summary">
@@ -175,7 +175,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-07-31 12:20:06 / Modified: 20:07:54" itemprop="dateCreated datePublished" datetime="2022-07-31T12:20:06+08:00">2022-07-31</time>
+              <time title="Created: 2022-07-31 12:20:06 / Modified: 21:28:12" itemprop="dateCreated datePublished" datetime="2022-07-31T12:20:06+08:00">2022-07-31</time>
             </span>
 
           
@@ -202,8 +202,12 @@
 <h3 id="如何在Remix中输入bytes相关的参数"><a href="#如何在Remix中输入bytes相关的参数" class="headerlink" title="如何在Remix中输入bytes相关的参数"></a>如何在Remix中输入bytes相关的参数</h3><p>以参数类型bytes32为例，bytes不定长数组可随意长度。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">bytes32 public bytes32Storage;</span><br><span class="line">function storeBytes32Parameters(bytes32 bytesArray) public returns (bytes32)&#123;</span><br><span class="line">    bytes32Storage  = bytesArray;</span><br><span class="line">    return bytesArray;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>在remix中输入 <code>&quot;0x1234567812345678123456781234567812345678123456781234567812345678&quot;</code></p>
-<p>两个字符占用一个字节，上述字符串长度64，正好是32字节。</p>
+<p>在remix中输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;0x1234567812345678123456781234567812345678123456781234567812345678&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>两个字符占用一个字节，上述字符串长度64，正好是32个字节。如果输入不是32个字节，调用会报错。</p>
 <h3 id="定长数组-x2F-动态长度数组"><a href="#定长数组-x2F-动态长度数组" class="headerlink" title="定长数组&#x2F;动态长度数组"></a>定长数组&#x2F;动态长度数组</h3><ul>
 <li><p>定长数组, bytes[K], k可以是1-32， 比如<code>bytes8</code>,代表长度是8的字节数组。</p>
 <p><strong>声明定长字节数组不需要指定位置</strong></p>
