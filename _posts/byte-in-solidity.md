@@ -4,6 +4,10 @@ date: 2022-07-31 12:20:06
 tags: bytes, solidity
 ---
 
+数组是solidity中常见的数据结构，有固定长度数据和长度可变数组。本文会介绍0.8.0以上版本的一些使用心得。
+
+<!-- more -->
+
 ### Big-Endian and Little-Endian
 
 * 字符串、bytes采用Big-Endian格式
@@ -38,8 +42,6 @@ tags: bytes, solidity
 ```
 "0x1234567812345678123456781234567812345678123456781234567812345678"
 ```
-
-
 
 两个字符占用一个字节，上述字符串长度64，正好是32个字节。如果输入不是32个字节，调用会报错。
 
@@ -128,7 +130,7 @@ function bytesToAddress(bytes20 input) public returns (address) {
 
 ### 其他
 
-在solidity 0.8版本之前，```byte``` 是 ```bytes1```的别名，byte[]容易让人产生误解，实际上他是一个byte1的数组，每一个element都会浪费31个byte。0.8之后，移除了这个keyword。[Solidity v0.8.0 Breaking Changes &mdash; Solidity 0.8.15 documentation](https://docs.soliditylang.org/en/v0.8.15/080-breaking-changes.html))
+在solidity 0.8版本之前，```byte``` 是 ```bytes1```的别名，byte[]容易让人产生误解，实际上他是一个byte1的数组，每一个element都会浪费31个byte。0.8之后，移除了这个keyword。[Solidity v0.8.0 Breaking Changes — Solidity 0.8.15 documentation](https://docs.soliditylang.org/en/v0.8.15/080-breaking-changes.html))
 
 > The type `byte` has been removed. It was an alias of `bytes1`.
 

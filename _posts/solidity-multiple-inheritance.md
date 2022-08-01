@@ -1,17 +1,17 @@
 ---
-title: solidity中的多重继承
+title: Solidity中的多重继承
 date: 2022-07-30 20:17:00
 tags: solidity, inheritance
 ---
 
-
-
+### 前言
 
 写合约的过程中，经常遇到继承多个合约，需要override的情况。比如openzeppelin的
-
 ERC1155，AccessControl都实现了``supportsInterface``函数，如果你的合约同时继承这两个合约，需要重写此函数。
 
+<!-- more -->
 
+### 实现多重继承，并重写虚函数
 
 定义2个基类`BaseContact1`和 ```BaseContact2```, 使用`virtual`关键字。
 
@@ -23,7 +23,7 @@ contract BaseContact1 {
     }
 
     function makeColor() virtual public pure {
-        
+
     }
 }
 ```
@@ -33,15 +33,11 @@ contract BaseContact1 {
 > Derived contract must override function "supportsInterface". 
 > Two or more base classes define function with same name and parameter types.
 
-
-
 使用override关键字，重写两个virtual函数， 重写后的函数也可以继续用virtual修饰，给子类提供重写的可能。
 
 ```
 override(BaseContact1, BaseContact2)
 ```
-
-
 
 完整代码如下
 
@@ -55,18 +51,18 @@ contract BaseContact1 {
     }
 
     function makeColor() virtual public pure {
-        
+
     }
 }
 
 contract BaseContact2 {
- 
+
     function getColor() virtual public view returns(string memory color) {
         return "yellow";
     }
 
     function makeColor() virtual public pure {
-        
+
     }
 }
 
