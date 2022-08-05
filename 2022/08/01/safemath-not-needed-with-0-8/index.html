@@ -169,13 +169,9 @@
             <p>为什么在Solidity 0.8.0之后还会看到合约中使用SafeMath库？</p>
 <span id="more"></span>
 
-
-
 <h3 id="Solidity-0-8-0中的算术运算"><a href="#Solidity-0-8-0中的算术运算" class="headerlink" title="Solidity 0.8.0中的算术运算"></a>Solidity 0.8.0中的算术运算</h3><p>溢出是一种常见的安全漏洞，在Solidity 0.8.0之前的版本中，经常会看到<code>using SafeMath for uint256</code>，开发者使用SafeMath来做溢出检查，防止合约产生bug。</p>
 <p>但是在0.8之后的版本中，solidity编译器自带了溢出检查，进行运算即可。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uint256 c = a / b;</span><br></pre></td></tr></table></figure>
-
-
 
 <h3 id="新旧版本的SafeMath代码对比"><a href="#新旧版本的SafeMath代码对比" class="headerlink" title="新旧版本的SafeMath代码对比"></a>新旧版本的SafeMath代码对比</h3><p>需要注意的是，SafeMath最新版中可以看到以下提示</p>
 <blockquote>
@@ -188,14 +184,18 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">function sub(</span><br><span class="line">    uint256 a,</span><br><span class="line">    uint256 b,</span><br><span class="line">    string memory errorMessage</span><br><span class="line">) internal pure returns (uint256) &#123;</span><br><span class="line">    require(b &lt;= a, errorMessage);</span><br><span class="line">    uint256 c = a - b;</span><br><span class="line"></span><br><span class="line">    return c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>从上面可以看到，因为0.8.0后的版本因为编译器自带了溢出检查，所以新版SafeMath使用unchecked关键字防止双重检查(require 和 a - b)。</p>
-<h3 id="为什么还会有项目使用SafeMath"><a href="#为什么还会有项目使用SafeMath" class="headerlink" title="为什么还会有项目使用SafeMath"></a>为什么还会有项目使用SafeMath</h3><p>0.8.0的官方在文档有如下描述, 意思是大家可以不用SafeMath了，编译器自带了溢出检查，但是还有还是有一些项目再用。</p>
+<h3 id="为什么还会有项目使用SafeMath"><a href="#为什么还会有项目使用SafeMath" class="headerlink" title="为什么还会有项目使用SafeMath"></a>为什么还会有项目使用SafeMath</h3><p>0.8.0版本的官方在文档有如下描述, 意思是大家可以不用SafeMath了，编译器自带了溢出检查，但还是有一些项目在用这个库。</p>
 <blockquote>
 <p>NOTE: SafeMath is generally not needed starting with Solidity 0.8, since the compiler now has built in overflow checking.</p>
 </blockquote>
 <p><strong>目前看唯一的用处是自定义revert message</strong>，下面是使用SafeMath和不使用SafeMath的写法，是不是感觉SafeMath更简洁一些：）</p>
+<ul>
+<li><p>使用SafeMath</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">balance.sub(value, &quot;not enough fund&quot;);</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">require(balance &gt; value, &quot;not enough fund&quot;);</span><br><span class="line">unchecked &#123;</span><br><span class="line">    balance -= value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不使用SafeMath</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">require(balance &gt; value, &quot;not enough fund&quot;);</span><br><span class="line">unchecked &#123;</span><br><span class="line">    balance -= value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
 
         </div>
 
@@ -213,6 +213,21 @@
 
         
             <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2022/08/04/transparent-vs-uups-proxy/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">Transparent proxy 与 UUPS Proxies</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
                 
                 
                     <div class="article-next">
