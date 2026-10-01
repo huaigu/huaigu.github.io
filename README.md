@@ -8,7 +8,8 @@ Open `index.html` directly, or serve the repository with `python -m http.server 
 
 ## What's here
 
-- Responsive, light-theme portfolio design with a pointer-responsive canvas sphere, a pause control, and reduced-motion support.
+- Responsive, light-theme portfolio with an interactive technology lab: particle transitions between AI routing, private compute, and real-time shared-state diagrams, grounded in actual project technologies.
+- Project-specific motion, one-time scroll reveals, and a reading-progress line. The global motion control pauses the canvas and all decorative loops; reduced-motion preferences and offscreen pausing are respected. No animation dependencies or live-metric claims.
 - Five selected projects: ShelbyFans, UpDown60, NumberVerse Arena, ProofQuest, and Neon Snake Glitch Arena.
 - A dedicated Applied AI section introduces Laya in English.
 - All 194 public repositories captured on October 1, 2026: 41 source repositories and 153 forks. Counts describe GitHub's fork flag, not original authorship.
