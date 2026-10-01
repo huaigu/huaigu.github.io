@@ -26,17 +26,17 @@
     function draw() {
       const c = context, cx = width * .51, cy = height * .475, radius = Math.min(width * .315, height * .342);
       c.clearRect(0, 0, width, height);
-      c.strokeStyle = '#60734524'; c.lineWidth = .6;
+      c.strokeStyle = '#72886126'; c.lineWidth = .6;
       c.beginPath(); c.moveTo(cx, 50); c.lineTo(cx, height - 75); c.moveTo(25, cy); c.lineTo(width - 25, cy); c.stroke();
       const glow = c.createRadialGradient(cx, cy, 0, cx, cy, radius * 1.25);
-      glow.addColorStop(0, '#8baa2817'); glow.addColorStop(1, '#8baa2800'); c.fillStyle = glow;
+      glow.addColorStop(0, '#7fa85413'); glow.addColorStop(1, '#7fa85400'); c.fillStyle = glow;
       c.beginPath(); c.arc(cx, cy, radius * 1.25, 0, Math.PI * 2); c.fill();
       const angle = phase + smoothX, tilt = -.18 + smoothY;
       const projected = points.map(p => rotate(p, angle, tilt)).sort((a,b) => a.z - b.z);
       for (const p of projected) {
         const depth = (p.z + 1) * .5;
         const scale = 1 + p.z * .065;
-        c.fillStyle = `rgba(194,238,113,${.09 + depth * .72})`;
+        c.fillStyle = `rgba(49,97,63,${.09 + depth * .72})`;
         c.beginPath(); c.arc(cx + p.x * radius * scale, cy + p.y * radius * scale, .55 + depth * .85, 0, Math.PI * 2); c.fill();
       }
       // Orbit lines add depth while remaining purely decorative.
@@ -49,14 +49,14 @@
           const px=cx+x*Math.cos(ring.rot)-y*Math.sin(ring.rot), py=cy+x*Math.sin(ring.rot)+y*Math.cos(ring.rot);
           if(i===0)c.moveTo(px,py);else c.lineTo(px,py);
         }
-        c.strokeStyle=index===0?'#a7c66b61':'#a7c66b35';c.lineWidth=.65;c.stroke();
+        c.strokeStyle=index===0?'#63855188':'#63855144';c.lineWidth=.65;c.stroke();
         const t = phase * (.75 + index * .3) + index * 3;
         const x = Math.cos(t)*radius*ring.size, y = Math.sin(t)*radius*ring.tilt;
         const px=cx+x*Math.cos(ring.rot)-y*Math.sin(ring.rot), py=cy+x*Math.sin(ring.rot)+y*Math.cos(ring.rot);
-        c.beginPath(); c.arc(px,py,4,0,Math.PI*2);c.fillStyle='#c4f26e';c.fill();
-        c.beginPath();c.arc(px,py,8,0,Math.PI*2);c.strokeStyle='#b9e76d40';c.stroke();
+        c.beginPath(); c.arc(px,py,4,0,Math.PI*2);c.fillStyle='#3b7048';c.fill();
+        c.beginPath();c.arc(px,py,8,0,Math.PI*2);c.strokeStyle='#628b5140';c.stroke();
       });
-      c.fillStyle='#92a673'; c.font='8px monospace';c.fillText('+',cx-2,cy+3);
+      c.fillStyle='#67805b'; c.font='8px monospace';c.fillText('+',cx-2,cy+3);
     }
     function animate(time) {
       frame = null;

@@ -8,8 +8,9 @@ Open `index.html` directly, or serve the repository with `python -m http.server 
 
 ## What's here
 
-- Responsive, original portfolio design with a pointer-responsive canvas sphere, a pause control, and reduced-motion support.
-- Four README-grounded featured projects plus two related experiments.
+- Responsive, light-theme portfolio design with a pointer-responsive canvas sphere, a pause control, and reduced-motion support.
+- Five selected projects: ShelbyFans, UpDown60, NumberVerse Arena, ProofQuest, and Neon Snake Glitch Arena.
+- A dedicated Applied AI section introduces Laya in English.
 - All 194 public repositories captured on October 1, 2026: 41 source repositories and 153 forks. Counts describe GitHub's fork flag, not original authorship.
 - Search, topic/type/language filters, sorting, pagination, empty states, and a `/` search shortcut.
 - The original four Solidity articles, archives, tags, old assets, and `CNAME` remain unchanged.
@@ -23,12 +24,12 @@ Topic categories are editorial heuristics, and projects can belong to several. A
 ## Content sources
 
 - Identity: public GitHub account/repository history; `huaigu/huaigu` profile; project READMEs corroborate Bojack/0xbojack.
-- Features: `huaigu/laya-article-examples`, `huaigu/fhevm-sdk`, `huaigu/GradMark-AI`, `huaigu/number-verse-arena`.
-- Related experiments: `huaigu/fhevm-treasure-hunt`, `huaigu/LuckLens`.
-- Writing: existing GitHub Pages articles, preserved in place.
+- Features: `huaigu/ShelbyFans`, `huaigu/UpDown60`, `huaigu/number-verse-arena`, `huaigu/proofquest-web3-adventures`, `huaigu/neon-snake-glitch-arena`.
+- Applied AI: `huaigu/laya-article-examples`.
+- Writing: existing GitHub Pages articles are preserved in place; the homepage notes section is removed.
 - Design research: [Anthony Fu](https://antfu.me/), [Paco Coursey](https://paco.me/), [Lee Robinson](https://leerob.com/), and [Jhey Tompkins](https://www.jhey.dev/). Used for storytelling/structure inspiration; no code or assets copied.
 
-Public-only data is included. No private repository information, employment/location claims, invented outcomes, or contact details from account authentication are published.
+The repository archive contains public repositories only. At the owner’s request, the featured selection also includes a high-level introduction to private project ShelbyFans, clearly labelled “Private source” without a source link. No private code, credentials, employment/location claims, invented outcomes, or contact details from account authentication are published.
 
 ## Deployment after approval
 
