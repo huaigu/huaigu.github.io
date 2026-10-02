@@ -1,0 +1,75 @@
+/* Masked entrances are applied only after intersection. Default styles leave
+   every word and artwork visible, including when JavaScript is unavailable. */
+.stage-word-mask,
+.stage-word-rise {
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+}
+.stage-word-mask {
+  display: inline-block;
+  vertical-align: baseline;
+  /* A clip mask keeps the original inline baseline, unlike overflow:hidden.
+     The small overscan preserves italic overhangs, accents, and descenders. */
+  clip-path: inset(-.12em -.085em -.12em -.085em);
+}
+.stage-word-rise { display: inline-block; }
+.portfolio-stage-ready .stage-text-enter .stage-word-rise {
+  animation: stage-word-rise .9s cubic-bezier(.19, 1, .22, 1) var(--stage-delay, 0ms) both;
+}
+
+.stage-art-curtain {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  background: var(--stage-curtain-color, #ece8de);
+  opacity: 0;
+  transform: translateX(102%);
+}
+.shelby-art { --stage-curtain-color: #e2d9eb; }
+.updown-art { --stage-curtain-color: #e9ddd2; }
+.number-art { --stage-curtain-color: #dce6ee; }
+.proof-art { --stage-curtain-color: #e8e1c8; }
+.snake-art { --stage-curtain-color: #dce9df; }
+.portfolio-stage-ready .stage-art-enter {
+  animation: stage-art-wipe 1.1s cubic-bezier(.16, 1, .3, 1) both;
+}
+.portfolio-stage-ready .stage-art-enter > .stage-art-curtain {
+  animation: stage-art-curtain 1.08s cubic-bezier(.4, 0, .2, 1) both;
+}
+
+@keyframes stage-word-rise {
+  from { transform: translate3d(0, 125%, 0) rotate(3deg); opacity: .15; }
+  to { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 1; }
+}
+@keyframes stage-art-wipe {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes stage-art-curtain {
+  0% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(102%); opacity: 1; }
+}
+
+/* Settle rather than freeze partly masked text or a half-covered illustration. */
+.portfolio-stage-ready:is(.motion-paused, .stage-document-hidden) .stage-word-rise,
+.portfolio-stage-ready:is(.motion-paused, .stage-document-hidden) .stage-art-enter,
+.portfolio-stage-ready:is(.motion-paused, .stage-document-hidden) .stage-art-curtain {
+  animation: none !important;
+}
+.portfolio-stage-ready:is(.motion-paused, .stage-document-hidden) .stage-word-rise {
+  transform: none !important;
+  opacity: 1 !important;
+}
+.portfolio-stage-ready:is(.motion-paused, .stage-document-hidden) .stage-art-enter { clip-path: none !important; }
+.portfolio-stage-ready:is(.motion-paused, .stage-document-hidden) .stage-art-curtain { opacity: 0 !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-stage-ready .stage-word-rise,
+  .portfolio-stage-ready .stage-art-enter,
+  .portfolio-stage-ready .stage-art-curtain { animation: none !important; }
+  .portfolio-stage-ready .stage-word-rise { transform: none !important; opacity: 1 !important; }
+  .portfolio-stage-ready .stage-art-enter { clip-path: none !important; }
+  .portfolio-stage-ready .stage-art-curtain { opacity: 0 !important; }
+}

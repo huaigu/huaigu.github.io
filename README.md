@@ -12,6 +12,7 @@ Open `index.html` directly, or serve the repository with `python -m http.server 
 
 - Responsive, light-theme portfolio with an interactive technology lab: particle transitions between AI routing, private compute, and real-time shared-state diagrams, grounded in actual project technologies.
 - A keyboard-accessible “Send a pulse” interaction adds ripples to the hero particle field; orbital trails, privacy rings, and a connected multiplayer mesh illustrate the selected theme.
+- A bilingual typewriter cycles through project themes, a wide technology ticker moves beneath the hero, and masked words and artwork curtains make scroll entrances clearly visible. Pause, reduced-motion, hidden-page, and offscreen behavior also cover these effects.
 - Scroll-driven depth makes project illustrations drift, rotate, and gently scale as you move through the page, with chapter progress rails and staggered detail entrances. Native scrolling remains unchanged; mobile movement is lighter.
 - Project-specific motion, fine-pointer card tilt and lighting, staged entrances, repository-result reveals, and a reading-progress line. The global motion control pauses the canvas and all decorative loops; reduced-motion preferences and offscreen pausing are respected. No animation dependencies or live-metric claims.
 - Five selected projects: ShelbyFans, UpDown60, NumberVerse Arena, ProofQuest, and Neon Snake Glitch Arena.
@@ -32,6 +33,7 @@ Topic categories are editorial heuristics, and projects can belong to several. A
 - Features: `huaigu/ShelbyFans`, `huaigu/UpDown60`, `huaigu/number-verse-arena`, `huaigu/proofquest-web3-adventures`, `huaigu/neon-snake-glitch-arena`.
 - Applied AI: `huaigu/laya-article-examples`.
 - Writing: existing GitHub Pages articles are preserved in place; the homepage notes section is removed.
+- Animation references found with Exa: [Typed.js](https://mattboldt.github.io/typed.js/), [GSAP SplitText](https://gsap.com/docs/v3/Plugins/SplitText/), and [Motion examples](https://motion.dev/examples). The implementations use native JavaScript and CSS.
 - Design research: [Anthony Fu](https://antfu.me/), [Paco Coursey](https://paco.me/), [Lee Robinson](https://leerob.com/), and [Jhey Tompkins](https://www.jhey.dev/). Used for storytelling/structure inspiration; no code or assets copied.
 
 The repository archive contains public repositories only. At the owner’s request, the featured selection also includes a high-level introduction to private project ShelbyFans, clearly labelled “Private source” without a source link. No private code, credentials, employment/location claims, invented outcomes, or contact details from account authentication are published.
