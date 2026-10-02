@@ -1,0 +1,154 @@
+/* Readable source content is the fallback. Motion is a deliberate, visible
+   layer, switched off by the same pause control as the rest of the portfolio. */
+.build-terminal {
+  width: 100%;
+  max-width: 470px;
+  min-width: 0;
+  margin: 0 0 24px;
+  padding: 16px 18px 13px;
+  border: 1px solid #c6d7aa;
+  border-left: 3px solid #648a39;
+  border-radius: 3px;
+  background: linear-gradient(110deg,#eef5df,#f7f8eb);
+  box-shadow: 4px 4px 0 #dfe8ce80;
+  color: #35522b;
+}
+.terminal-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 11px;
+  font: 9px/1.3 var(--mono);
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #59763d;
+}
+.terminal-label::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  flex: none;
+  background: #6e9545;
+  border-radius: 1px;
+}
+.build-terminal .terminal-line {
+  height: 2.7em;
+  margin: 0;
+  font-family: var(--mono);
+  font-size: clamp(18px,1.8vw,24px);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -.7px;
+  color: #35522b;
+  overflow-wrap: anywhere;
+}
+.terminal-prompt {
+  display: inline-block;
+  margin-right: 9px;
+  color: #7b994d;
+}
+.typing-caret {
+  display: inline-block;
+  width: .45em;
+  height: 1.05em;
+  margin-left: 3px;
+  vertical-align: -.16em;
+  background: #5e8238;
+  border-radius: 1px;
+  pointer-events: none;
+}
+.expressive-typing .typing-caret { animation: expressive-caret .82s step-end infinite; }
+html[lang="zh-CN"] .build-terminal .terminal-line {
+  font-family: var(--mono),'PingFang SC','Microsoft YaHei',sans-serif;
+  letter-spacing: .1px;
+}
+
+.tech-marquee {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  isolation: isolate;
+  padding: 25px 0 27px;
+  border-top: 1px solid #c4d3b1;
+  border-bottom: 1px solid #c4d3b1;
+  background: #eaf2da;
+  color: #426239;
+}
+.tech-marquee-track {
+  display: flex;
+  width: max-content;
+  max-width: none;
+  animation: expressive-marquee 26s linear infinite;
+  animation-play-state: paused;
+}
+.tech-marquee-group {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex: none;
+  white-space: nowrap;
+  padding-right: 32px;
+  font-family: var(--mono);
+  font-size: clamp(36px,3.1vw,44px);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -.6px;
+}
+.tech-marquee-star {
+  flex: none;
+  color: #88a65d;
+  font-size: 36px;
+}
+.expressive-marquee-running .tech-marquee-track { animation-play-state: running; }
+.tech-marquee:focus-within .tech-marquee-track { animation-play-state: paused; }
+@media(hover:hover) {
+  .tech-marquee:hover .tech-marquee-track { animation-play-state: paused; }
+}
+.tech-marquee::before,.tech-marquee::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: clamp(20px,4vw,72px);
+  pointer-events: none;
+}
+.tech-marquee::before { left: 0; background: linear-gradient(90deg,#eaf2da,transparent); }
+.tech-marquee::after { right: 0; background: linear-gradient(270deg,#eaf2da,transparent); }
+@keyframes expressive-caret {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+@keyframes expressive-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media(max-width:760px) {
+  .build-terminal { max-width: 470px; }
+  .build-terminal .terminal-line { font-size: 22px; }
+  .tech-marquee { padding: 22px 0; }
+  .tech-marquee-group { font-size: 32px; padding-right: 22px; gap: 22px; }
+  .tech-marquee-star { font-size: 28px; }
+}
+@media(max-width:520px) {
+  .build-terminal { padding: 14px 15px 11px; margin-bottom: 23px; }
+  .terminal-label { font-size: 8px; letter-spacing: 1.1px; margin-bottom: 10px; }
+  .build-terminal .terminal-line { font-size: 18px; letter-spacing: -.5px; }
+  .terminal-prompt { margin-right: 6px; }
+  .tech-marquee { padding: 20px 0; }
+  .tech-marquee-group { font-size: 28px; }
+  .tech-marquee-star { font-size: 24px; }
+}
+.motion-paused .typing-caret,
+.expressive-document-hidden .typing-caret {
+  animation: none !important;
+  opacity: 1;
+}
+.motion-paused .tech-marquee-track,
+.expressive-document-hidden .tech-marquee-track { animation-play-state: paused !important; }
+@media(prefers-reduced-motion:reduce) {
+  .typing-caret { animation: none !important; opacity: 1; }
+  .tech-marquee-track { animation: none !important; transform: none !important; }
+}
