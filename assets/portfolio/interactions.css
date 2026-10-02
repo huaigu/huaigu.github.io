@@ -59,13 +59,19 @@
 .portfolio-interactions-ready .interaction-repo-enter {
   animation: interaction-repository .48s cubic-bezier(.2,.7,.25,1) var(--interaction-delay,0ms) both;
 }
+.portfolio-interactions-ready .interaction-story-enter {
+  animation: interaction-story .86s cubic-bezier(.16,1,.3,1) var(--interaction-delay,0ms) both;
+}
+.portfolio-interactions-ready .interaction-chip-enter {
+  animation: interaction-chip .72s cubic-bezier(.16,1,.3,1) var(--interaction-delay,0ms) both;
+}
 .portfolio-interactions-ready .interaction-heading { position: relative; }
 .portfolio-interactions-ready .interaction-heading::after {
   content: '';
   position: absolute;
   left: 1px;
   bottom: -16px;
-  width: 52px;
+  width: min(100px,32%);
   height: 2px;
   background: currentColor;
   opacity: .2;
@@ -83,6 +89,14 @@
   from { opacity: .7; translate: 0 9px; }
   to { opacity: 1; translate: 0 0; }
 }
+@keyframes interaction-story {
+  from { opacity: .4; translate: 0 28px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes interaction-chip {
+  from { opacity: .45; translate: 0 18px; scale: .96; }
+  to { opacity: 1; translate: 0 0; scale: 1; }
+}
 @keyframes interaction-underline {
   from { transform: scaleX(.08); opacity: .08; }
   to { transform: scaleX(1); opacity: .2; }
@@ -98,7 +112,7 @@
   opacity: 0 !important;
   transition: none !important;
 }
-.portfolio-interactions-ready:is(.motion-paused,.interactions-document-hidden) :is(.interaction-hero-enter,.interaction-repo-enter),
+.portfolio-interactions-ready:is(.motion-paused,.interactions-document-hidden) :is(.interaction-hero-enter,.interaction-repo-enter,.interaction-story-enter,.interaction-chip-enter),
 .portfolio-interactions-ready:is(.motion-paused,.interactions-document-hidden) .interaction-heading-reveal::after { animation: none !important; }
 .portfolio-interactions-ready:is(.motion-paused,.interactions-document-hidden) :is(.button.primary,.text-link,.stats-link,.nav-github) > span[aria-hidden="true"],
 .portfolio-interactions-ready:is(.motion-paused,.interactions-document-hidden) .repo-arrow,
@@ -116,7 +130,7 @@
     opacity: 0 !important;
     transition: none !important;
   }
-  .portfolio-interactions-ready :is(.interaction-hero-enter,.interaction-repo-enter),
+  .portfolio-interactions-ready :is(.interaction-hero-enter,.interaction-repo-enter,.interaction-story-enter,.interaction-chip-enter),
   .portfolio-interactions-ready .interaction-heading-reveal::after { animation: none !important; }
   .portfolio-interactions-ready :is(.button.primary,.text-link,.stats-link,.nav-github) > span[aria-hidden="true"],
   .portfolio-interactions-ready .repo-arrow,

@@ -1,0 +1,77 @@
+/* Scroll depth uses independent transforms so illustration and hover effects
+   keep their original rotation/centering. Text stays fully readable. */
+.portfolio-scroll-ready .scroll-scene {
+  translate: 0 var(--scroll-shift,0px);
+  rotate: var(--scroll-turn,0deg);
+  scale: var(--scroll-scale,1);
+}
+.portfolio-scroll-ready .scroll-depth-panel { translate: 0 var(--scroll-shift,0px); }
+/* Individual details now enter in sequence; keep their measured parent still. */
+.portfolio-scroll-ready :is(.project,.laya-grid,.about-grid,.contact-section).motion-reveal-once { animation: none; }
+.scroll-art-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  z-index: 6;
+  background: #243b2410;
+  pointer-events: none;
+  overflow: hidden;
+}
+.scroll-art-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: currentColor;
+  opacity: .4;
+  transform: scaleX(var(--scroll-art-progress,0));
+  transform-origin: left center;
+}
+.scroll-chapter { position: relative; }
+.scroll-chapter-rail {
+  position: absolute;
+  top: 30px;
+  bottom: 30px;
+  left: 23px;
+  width: 1px;
+  background: #3973470d;
+  pointer-events: none;
+  opacity: .7;
+}
+.scroll-chapter-fill {
+  position: absolute;
+  inset: 0;
+  transform: scaleY(var(--scroll-journey,0));
+  transform-origin: center top;
+  background: linear-gradient(#4d795c16,#4d795c80);
+}
+.scroll-chapter-dot {
+  position: absolute;
+  top: calc(var(--scroll-journey,0) * 100%);
+  left: -2px;
+  width: 5px;
+  height: 5px;
+  margin-top: -2px;
+  border-radius: 50%;
+  background: #76957a;
+  box-shadow: 0 0 0 4px #76957a10;
+}
+html:not(.portfolio-scroll-ready) :is(.scroll-chapter-rail,.scroll-art-track) { display: none; }
+.portfolio-scroll-ready.scroll-effects-paused :is(.scroll-scene,.scroll-depth-panel) {
+  translate: none !important;
+  rotate: none !important;
+  scale: none !important;
+}
+.portfolio-scroll-ready.scroll-effects-paused :is(.scroll-chapter-rail,.scroll-art-track) { visibility: hidden; }
+@media(max-width:760px) {
+  .scroll-chapter-rail { display: none; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .portfolio-scroll-ready :is(.scroll-scene,.scroll-depth-panel) {
+    translate: none !important;
+    rotate: none !important;
+    scale: none !important;
+  }
+  .scroll-chapter-rail,.scroll-art-track { display: none; }
+}

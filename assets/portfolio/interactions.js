@@ -1,5 +1,5 @@
-/* Small, progressive enhancements: all content stays readable before JS runs.
-   No text replacement, continuous animation loop, or child-element hooks. */
+/* Progressive enhancements: all content stays readable before JS runs.
+   No text replacement, continuous animation loop, or inserted text wrappers. */
 (() => {
   'use strict';
 
@@ -18,7 +18,7 @@
     let pointerFrame = null;
 
     function finishEntrance(element) {
-      element.classList.remove('interaction-hero-enter', 'interaction-repo-enter', 'interaction-heading-reveal');
+      element.classList.remove('interaction-hero-enter', 'interaction-repo-enter', 'interaction-heading-reveal', 'interaction-story-enter', 'interaction-chip-enter');
       element.style.removeProperty('--interaction-delay');
       activeEntrances.delete(element);
     }
@@ -116,6 +116,43 @@
       heading.classList.add('interaction-heading');
       headingObserver.observe(heading);
     });
+
+    // Choreograph the existing text blocks as they actually enter the viewport.
+    // Nothing is pre-hidden, and a language change keeps these stable elements.
+    const storySequence = new WeakMap();
+    const storyObserver = new IntersectionObserver(entries => {
+      const visibleGroups = new Map();
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const sequence = storySequence.get(entry.target);
+        if (!sequence) return;
+        if (!visibleGroups.has(sequence.group)) visibleGroups.set(sequence.group, []);
+        visibleGroups.get(sequence.group).push({ element: entry.target, ...sequence });
+        storyObserver.unobserve(entry.target);
+      });
+      visibleGroups.forEach(group => {
+        group.sort((a, b) => a.order - b.order).forEach((item, index) => {
+          enter(item.element, item.kind, Math.min(index * item.step, 320));
+        });
+      });
+    }, { threshold: .16, rootMargin: '0px 0px -5% 0px' });
+
+    function observeSequence(parentSelector, childSelector, kind = 'interaction-story-enter', step = 75) {
+      document.querySelectorAll(parentSelector).forEach(group => {
+        [...group.children].filter(element => element.matches(childSelector)).forEach((element, order) => {
+          storySequence.set(element, { group, order, kind, step });
+          storyObserver.observe(element);
+        });
+      });
+    }
+
+    observeSequence('.project-body', '.project-tags, h3, p, .shelby-details, .project-bottom', 'interaction-story-enter', 70);
+    observeSequence('.stats', 'div, a', 'interaction-story-enter', 85);
+    observeSequence('.laya-copy', 'p, a', 'interaction-story-enter', 80);
+    observeSequence('.about-copy', 'p, a', 'interaction-story-enter', 80);
+    observeSequence('.interest-list', 'span', 'interaction-chip-enter', 65);
+    observeSequence('.contact-section', 'p, a', 'interaction-story-enter', 95);
+    observeSequence('.contact-bottom', 'p, a', 'interaction-story-enter', 95);
 
     const repositoryList = document.querySelector('#repo-list');
     if (!repositoryList) return;
