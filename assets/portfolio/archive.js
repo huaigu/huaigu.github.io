@@ -18,6 +18,18 @@
   let repositories = [];
   let activeCategory = 'all';
   let visible = pageSize;
+  let uiLanguage = window.portfolioI18n?.language === 'zh' ? 'zh' : 'en';
+  let snapshotDate = null;
+  let loaded = false;
+  let unavailable = false;
+
+  function localize(english, chinese) {
+    return uiLanguage === 'zh' ? chinese : english;
+  }
+
+  function dateLocale() {
+    return uiLanguage === 'zh' ? 'zh-CN' : 'en-US';
+  }
 
   function element(tag, className, text) {
     const node = document.createElement(tag);
@@ -55,24 +67,24 @@
     arrow.setAttribute('aria-hidden', 'true');
     link.append(arrow);
     title.append(link);
-    const badge = element('span', `repo-badge ${repository.fork ? 'is-fork' : 'is-source'}`, repository.fork ? 'Fork' : 'Source');
+    const badge = element('span', `repo-badge ${repository.fork ? 'is-fork' : 'is-source'}`, repository.fork ? localize('Fork', 'Fork 仓库') : localize('Source', '非 Fork'));
     top.append(badge);
-    const description = element('p', 'repo-description', repository.description?.trim() || 'Public repository. Explore the code on GitHub.');
+    const description = element('p', 'repo-description', repository.description?.trim() || localize('Public repository. Explore the code on GitHub.', '公开仓库，可前往 GitHub 查看代码。'));
     const meta = element('div', 'repo-meta');
-    meta.append(element('span', 'repo-language', repository.language || 'No language listed'));
+    meta.append(element('span', 'repo-language', repository.language || localize('No language listed', '未标注语言')));
     const stars = Number(repository.stargazers_count) || 0;
-    const starLabel = element('span', 'repo-stars', `☆ ${stars.toLocaleString('en-US')}`);
-    starLabel.setAttribute('aria-label', `${stars} ${stars === 1 ? 'star' : 'stars'}`);
+    const starLabel = element('span', 'repo-stars', `☆ ${stars.toLocaleString(dateLocale())}`);
+    starLabel.setAttribute('aria-label', localize(`${stars} ${stars === 1 ? 'star' : 'stars'}`, `${stars} 个星标`));
     meta.append(starLabel);
     if (timestamp(repository)) {
-      const updated = element('time', 'repo-updated', new Intl.DateTimeFormat('en-US', {
+      const updated = element('time', 'repo-updated', new Intl.DateTimeFormat(dateLocale(), {
         month: 'short', year: 'numeric', timeZone: 'UTC',
       }).format(new Date(repository.updated_at)));
       updated.dateTime = repository.updated_at;
-      updated.title = 'Repository last updated on GitHub';
+      updated.title = localize('Repository last updated on GitHub', '仓库在 GitHub 上的最近更新时间');
       meta.append(updated);
     }
-    if (repository.archived) meta.append(element('span', 'repo-badge is-archived', 'Archived'));
+    if (repository.archived) meta.append(element('span', 'repo-badge is-archived', localize('Archived', '已归档')));
     card.append(top, title, description, meta);
     return card;
   }
@@ -98,14 +110,15 @@
     for (const repository of filtered.slice(0, visible)) fragment.append(createCard(repository));
     if (!filtered.length) {
       const empty = element('div', 'repo-empty');
-      empty.append(element('h3', 'repo-empty-title', 'No repositories found.'), element('p', '', 'Try a different search or reset the filters.'));
+      empty.append(element('h3', 'repo-empty-title', localize('No repositories found.', '没有找到匹配的仓库。')), element('p', '', localize('Try a different search or reset the filters.', '换个关键词试试，或重置筛选条件。')));
       fragment.append(empty);
     }
     list.replaceChildren(fragment);
-    if (count) count.textContent = `Showing ${Math.min(visible, filtered.length)} of ${filtered.length} ${filtered.length === 1 ? 'repository' : 'repositories'}`;
+    if (count) count.textContent = localize(`Showing ${Math.min(visible, filtered.length)} of ${filtered.length} ${filtered.length === 1 ? 'repository' : 'repositories'}`, `已显示 ${Math.min(visible, filtered.length)} 个仓库，共 ${filtered.length} 个`);
     if (loadMore) {
       loadMore.hidden = visible >= filtered.length;
-      loadMore.textContent = `Show ${Math.min(pageSize, Math.max(0, filtered.length - visible))} more`;
+      const remaining = Math.min(pageSize, Math.max(0, filtered.length - visible));
+      loadMore.textContent = localize(`Show ${remaining} more`, `再显示 ${remaining} 个`);
     }
     if (moveFocus) list.children[priorVisible]?.querySelector('a')?.focus({ preventScroll: true });
     for (const button of categories) {
@@ -114,6 +127,35 @@
       button.setAttribute('aria-pressed', String(selected));
     }
   }
+
+  function localizeMetadata() {
+    const snapshot = document.querySelector('.snapshot-note');
+    if (snapshot && snapshotDate) {
+      snapshot.textContent = localize('Snapshot · ', '数据快照 · ') + new Intl.DateTimeFormat(dateLocale(), {
+        year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC',
+      }).format(snapshotDate);
+    }
+    // Change option labels in place, retaining their stable values, order, and
+    // the current selection. Upstream programming language names stay intact.
+    language?.querySelectorAll('option[data-repo-language]').forEach(option => {
+      const name = option.dataset.repoLanguage;
+      const label = name === 'Unspecified' ? localize('Unspecified', '未标注') : name;
+      option.textContent = `${label} (${option.dataset.repoCount})`;
+    });
+  }
+
+  function renderUnavailable() {
+    list.replaceChildren(element('p', 'repo-empty', localize('The repository archive could not load. Browse all public repositories on GitHub using the link above.', '仓库列表暂时无法加载。可通过上方链接，在 GitHub 查看全部公开仓库。')));
+    if (count) count.textContent = localize('Archive unavailable', '仓库列表暂不可用');
+    if (loadMore) loadMore.hidden = true;
+  }
+
+  document.addEventListener('portfolio:language', event => {
+    uiLanguage = (event.detail?.language || window.portfolioI18n?.language) === 'zh' ? 'zh' : 'en';
+    localizeMetadata();
+    if (unavailable) renderUnavailable();
+    else if (loaded) render();
+  });
 
   async function initialize() {
     try {
@@ -136,8 +178,7 @@
           searchText: normalize([repository.name, repository.description, repository.language, ...(repository.topics || [])].join(' ')),
         };
       });
-      const snapshot = document.querySelector('.snapshot-note');
-      if (snapshot && data.fetched_at && Number.isFinite(Date.parse(data.fetched_at))) snapshot.textContent = 'Snapshot · ' + new Intl.DateTimeFormat('en-US', {year:'numeric', month:'long', day:'numeric', timeZone:'UTC'}).format(new Date(data.fetched_at));
+      if (data.fetched_at && Number.isFinite(Date.parse(data.fetched_at))) snapshotDate = new Date(data.fetched_at);
       const sources = repositories.filter(repository => !repository.fork).length;
       const totals = { 'repo-total': repositories.length, 'source-total': sources, 'fork-total': repositories.length - sources };
       for (const [attribute, value] of Object.entries(totals)) {
@@ -152,6 +193,8 @@
         for (const [name, total] of [...languages].sort((a, b) => a[0].localeCompare(b[0]))) {
           const option = element('option', '', `${name} (${total})`);
           option.value = name;
+          option.dataset.repoLanguage = name;
+          option.dataset.repoCount = String(total);
           language.append(option);
         }
       }
@@ -174,11 +217,12 @@
         refresh();
         search?.focus({ preventScroll: true });
       });
+      loaded = true;
+      localizeMetadata();
       render();
     } catch (error) {
-      list.replaceChildren(element('p', 'repo-empty', 'The repository archive could not load. Browse all public repositories on GitHub using the link above.'));
-      if (count) count.textContent = 'Archive unavailable';
-      if (loadMore) loadMore.hidden = true;
+      unavailable = true;
+      renderUnavailable();
       console.error('Repository archive:', error.message);
     }
   }
