@@ -1,20 +1,23 @@
 (() => {
   'use strict';
   const root = document.documentElement;
+  const text = (english, chinese) => window.portfolioI18n?.pick(english, chinese) ?? english;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const control = document.getElementById('motion-toggle');
   let userPaused = false, paused = reduced.matches || document.hidden;
   function syncMotion() {
     paused = userPaused || reduced.matches || document.hidden;
     root.classList.toggle('motion-paused', paused);
-    if (control) {
-      control.disabled = reduced.matches;
-      control.setAttribute('aria-pressed', String(paused));
-      control.setAttribute('aria-label', reduced.matches ? 'Reduced motion enabled' : paused ? 'Play all animations' : 'Pause all animations');
-      control.title = control.getAttribute('aria-label');
-      control.firstElementChild.textContent = paused ? '▶' : 'Ⅱ';
-    }
+    updateMotionLabel();
     document.dispatchEvent(new CustomEvent('portfolio:motion', {detail: {paused}}));
+  }
+  function updateMotionLabel() {
+    if (!control) return;
+    control.disabled = reduced.matches;
+    control.setAttribute('aria-pressed', String(paused));
+    control.setAttribute('aria-label', reduced.matches ? text('Reduced motion enabled', '已遵循减少动态效果的设置') : paused ? text('Play all animations', '播放所有动画') : text('Pause all animations', '暂停所有动画'));
+    control.title = control.getAttribute('aria-label');
+    control.firstElementChild.textContent = paused ? '▶' : 'Ⅱ';
   }
   control?.addEventListener('click', () => { userPaused = !userPaused; syncMotion(); });
   reduced.addEventListener('change', syncMotion);
@@ -28,6 +31,11 @@
     ai: {color: [55, 111, 73], title: 'Classify. Check. Route.', stack: 'Python · FastAPI · AI workflows', link: '#applied-ai', label: 'Explore the Laya examples', index: '01 / APPLIED AI'},
     privacy: {color: [114, 83, 157], title: 'Keep the choice encrypted.', stack: 'Solidity · Zama FHEVM · zkTLS', link: '#work', label: 'Explore privacy projects', index: '02 / PRIVATE COMPUTE'},
     play: {color: [184, 100, 52], title: 'Shared worlds. Live state.', stack: 'TypeScript · React · Multisynq', link: '#project-neon-snake', label: 'Explore multiplayer work', index: '03 / REAL-TIME SYSTEMS'}
+  };
+  const modeTextZh = {
+    ai: {title: '识别意图，判断置信度，再分流。', stack: 'Python · FastAPI · AI 工作流', label: '查看 Laya 实战示例', index: '01 / AI 应用'},
+    privacy: {title: '让选择留在密文里。', stack: 'Solidity · Zama FHEVM · zkTLS', label: '查看隐私计算项目', index: '02 / 隐私计算'},
+    play: {title: '共享世界，实时同步。', stack: 'TypeScript · React · Multisynq', label: '查看多人游戏项目', index: '03 / 实时系统'}
   };
   const modeButtons = [...document.querySelectorAll('[data-skill-mode]')];
   let mode = 'ai';
@@ -122,12 +130,18 @@
     const data = modes[next];
     host.dataset.mode = next; host.style.setProperty('--lab-accent', `rgb(${data.color.join(',')})`);
     modeButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.skillMode === next)));
-    document.getElementById('orbit-caption').textContent = data.title;
-    document.getElementById('skill-stack').textContent = data.stack;
-    document.getElementById('skill-index').textContent = data.index;
-    const link = document.getElementById('skill-project-link'); link.href = data.link; link.textContent = data.label;
+    renderModeText();
     if (paused) snapShape();
     requestDraw();
+  }
+  function renderModeText() {
+    const data = modes[mode], chinese = modeTextZh[mode];
+    document.getElementById('orbit-caption').textContent = text(data.title, chinese.title);
+    document.getElementById('skill-stack').textContent = text(data.stack, chinese.stack);
+    document.getElementById('skill-index').textContent = text(data.index, chinese.index);
+    const link = document.getElementById('skill-project-link');
+    link.href = data.link;
+    link.textContent = text(data.label, chinese.label);
   }
   function resize() {
     const rect = canvas.getBoundingClientRect(); width = rect.width; height = rect.height;
@@ -164,6 +178,11 @@
   window.addEventListener('scroll', () => { if (scrollFrame === null) scrollFrame = requestAnimationFrame(updateProgress); }, {passive: true});
   window.addEventListener('resize', updateProgress, {passive: true});
   updateProgress();
+  document.addEventListener('portfolio:language', () => {
+    updateMotionLabel();
+    if (host) renderModeText();
+    updateProgress();
+  });
   document.addEventListener('keydown', event => {
     if (event.key === '/' && !event.metaKey && !event.ctrlKey && !event.altKey && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || '') && !document.activeElement?.isContentEditable) {
       const search = document.getElementById('repo-search');

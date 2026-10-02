@@ -1,0 +1,35 @@
+/* Language controls remain visible at every supported viewport. */
+.site-header{display:grid;grid-template-columns:1fr auto auto;gap:24px}
+.site-header nav{gap:24px}
+.language-switch{display:flex;align-items:center;gap:2px;border:1px solid #d5dece;border-radius:6px;padding:3px;white-space:nowrap}
+.language-switch[hidden]{display:none}
+.language-switch button{border:0;background:transparent;border-radius:3px;min-height:34px;padding:6px 10px;color:#687262;font-size:12px;line-height:1.4}
+.language-switch button[aria-pressed="true"]{color:#fff;background:#3b7048}
+.language-switch button:hover:not([aria-pressed="true"]){background:#edf2e6;color:#34583c}
+html[lang="zh-CN"]{--sans:Arial,'PingFang SC','Microsoft YaHei',sans-serif;--serif:Georgia,'Songti SC','SimSun',serif}
+html[lang="zh-CN"] h1{font-size:clamp(56px,6.7vw,90px);line-height:1.15;letter-spacing:-.035em;margin-left:0}
+html[lang="zh-CN"] h2,html[lang="zh-CN"] .about-section h2,html[lang="zh-CN"] .laya-copy h2{letter-spacing:-.03em;line-height:1.35}
+html[lang="zh-CN"] .about-section h2 em,html[lang="zh-CN"] .laya-copy h2 em,html[lang="zh-CN"] .contact-title em{font-style:normal}
+html[lang="zh-CN"] .hero-description{line-height:1.9}
+html[lang="zh-CN"] .eyebrow{letter-spacing:1.2px}
+html[lang="zh-CN"] .contact-title{line-height:1.35;letter-spacing:-.025em}
+html[lang="zh-CN"] .skill-detail #orbit-caption{font-size:20px;line-height:1.45;letter-spacing:0}
+html[lang="zh-CN"] .skills-lab{height:570px}
+html[lang="zh-CN"] .project-body p,html[lang="zh-CN"] .about-copy p,html[lang="zh-CN"] .laya-copy p{line-height:1.9}
+html[lang="zh-CN"] .workflow-steps p{line-height:1.8}
+html[lang="zh-CN"] .screen-word{font-size:30px;letter-spacing:1px;line-height:1.35}
+html[lang="zh-CN"] .proof-step b{font-size:22px}
+@media(min-width:1440px){html[lang="zh-CN"] .skills-lab{height:590px}}
+@media(max-width:1100px){.site-header{gap:16px}.site-header nav{gap:18px}.site-header .brand-name{display:none}.site-header nav .nav-github{margin-left:0}.language-switch button{padding:6px 8px}html[lang="zh-CN"] h1{font-size:70px}}
+@media(max-width:760px){
+  .site-header{grid-template-columns:1fr auto;height:auto;min-height:112px;gap:12px;padding-top:18px;padding-bottom:12px}
+  .site-header .brand{grid-column:1;grid-row:1}.site-header .brand-name{display:inline}
+  .site-header .language-switch{grid-column:2;grid-row:1}
+  .site-header nav{grid-column:1/-1;grid-row:2;justify-content:space-between;gap:16px;font-size:12px}
+  .site-header nav>a:nth-child(2),.site-header nav>a:nth-child(3){display:inline}
+  .site-header nav .nav-github{border:0;padding:6px 0}
+  html[lang="zh-CN"] h1{font-size:clamp(49px,9.5vw,68px)}
+  html[lang="zh-CN"] .skills-lab{height:555px}
+}
+@media(max-width:520px){.site-header .brand-name,.site-header .brand-slash{display:none}.site-header .brand{font-size:16px;gap:8px}.language-switch button{font-size:11px;padding:6px 8px}.site-header nav{font-size:12px}html[lang="zh-CN"] h1{font-size:51px}html[lang="zh-CN"] h2,html[lang="zh-CN"] .about-section h2{font-size:35px}html[lang="zh-CN"] .laya-copy h2{font-size:32px}html[lang="zh-CN"] .skill-detail #orbit-caption{font-size:18px}html[lang="zh-CN"] .contact-title{font-size:34px}}
+@media(max-width:359px){.site-header{column-gap:8px}.language-switch button{padding:6px 7px}html[lang="zh-CN"] h1{font-size:43px}html[lang="zh-CN"] h2,html[lang="zh-CN"] .about-section h2{font-size:31px}html[lang="zh-CN"] .laya-copy h2{font-size:28px}html[lang="zh-CN"] .skill-detail #orbit-caption{font-size:16px}html[lang="zh-CN"] .contact-title{font-size:29px}}
