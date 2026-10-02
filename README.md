@@ -11,7 +11,8 @@ Open `index.html` directly, or serve the repository with `python -m http.server 
 - English by default with an English / 中文 language switch. A visitor's explicit choice is remembered locally; browser language does not override the default. Portfolio copy and interface controls are translated, while repository names, programming languages, and upstream descriptions retain their source text.
 
 - Responsive, light-theme portfolio with an interactive technology lab: particle transitions between AI routing, private compute, and real-time shared-state diagrams, grounded in actual project technologies.
-- Project-specific motion, one-time scroll reveals, and a reading-progress line. The global motion control pauses the canvas and all decorative loops; reduced-motion preferences and offscreen pausing are respected. No animation dependencies or live-metric claims.
+- A keyboard-accessible “Send a pulse” interaction adds ripples to the hero particle field; orbital trails, privacy rings, and a connected multiplayer mesh illustrate the selected theme.
+- Project-specific motion, fine-pointer card tilt and lighting, staged entrances, repository-result reveals, and a reading-progress line. The global motion control pauses the canvas and all decorative loops; reduced-motion preferences and offscreen pausing are respected. No animation dependencies or live-metric claims.
 - Five selected projects: ShelbyFans, UpDown60, NumberVerse Arena, ProofQuest, and Neon Snake Glitch Arena.
 - A dedicated Applied AI section introduces Laya in English and Chinese.
 - All 194 public repositories captured on October 1, 2026: 41 source repositories and 153 forks. Counts describe GitHub's fork flag, not original authorship.
