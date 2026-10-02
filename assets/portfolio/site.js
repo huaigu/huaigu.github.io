@@ -4,6 +4,7 @@
   const text = (english, chinese) => window.portfolioI18n?.pick(english, chinese) ?? english;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const control = document.getElementById('motion-toggle');
+  const sparkControl = document.getElementById('spark-control');
   let userPaused = false, paused = reduced.matches || document.hidden;
   function syncMotion() {
     paused = userPaused || reduced.matches || document.hidden;
@@ -12,6 +13,10 @@
     document.dispatchEvent(new CustomEvent('portfolio:motion', {detail: {paused}}));
   }
   function updateMotionLabel() {
+    if (sparkControl) {
+      sparkControl.disabled = paused;
+      sparkControl.title = paused ? text('Resume animations to send a pulse', '恢复动画后，即可发送脉冲') : text('Send a pulse through the particle system', '向粒子系统发送一道脉冲');
+    }
     if (!control) return;
     control.disabled = reduced.matches;
     control.setAttribute('aria-pressed', String(paused));
@@ -55,8 +60,10 @@
   let points = shapes.ai.map(p => ({...p})), color = [...modes.ai.color];
   let width = 1, height = 1, frame = null, phase = .65, previous = 0, inView = true;
   let pointerX = 0, pointerY = 0, smoothX = 0, smoothY = 0, graphAlpha = 1;
+  let pulse = 0, meshAlpha = 0, ringAlpha = 0;
   function snapShape() {
     points = shapes[mode].map(p => ({...p})); color = [...modes[mode].color]; graphAlpha = mode === 'ai' ? 1 : 0;
+    meshAlpha = mode === 'play' ? 1 : 0; ringAlpha = mode === 'privacy' ? 1 : 0; pulse = 0;
   }
   function project(p) {
     const rotation = mode === 'ai' ? Math.sin(phase * .6) * .08 : phase * .45;
@@ -64,13 +71,18 @@
     const x = p.x * Math.cos(angle) + p.z * Math.sin(angle), z = -p.x * Math.sin(angle) + p.z * Math.cos(angle);
     const py = p.y * Math.cos(tilt) - z * Math.sin(tilt), pz = p.y * Math.sin(tilt) + z * Math.cos(tilt);
     const radius = Math.min(width * .31, height * .37);
-    return {x: width / 2 + x * radius * (1 + pz * .08), y: height / 2 + py * radius * (1 + pz * .08), z: pz};
+    const wave = Math.sin(Math.max(0, pulse) / 2.4 * Math.PI) * .17;
+    return {x: width / 2 + x * radius * (1 + pz * .08 + wave), y: height / 2 + py * radius * (1 + pz * .08 + wave), z: pz};
   }
   function draw() {
     if (!context) return;
     const c = context, rgb = color.map(Math.round).join(',');
     const centerX = width / 2, centerY = height / 2, radius = Math.min(width * .31, height * .37);
     c.clearRect(0, 0, width, height);
+    const halo = c.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius * 1.5);
+    halo.addColorStop(0, `rgba(${rgb},${.045 + Math.sin(phase) * .012})`);
+    halo.addColorStop(1, `rgba(${rgb},0)`);
+    c.fillStyle = halo; c.fillRect(0, 0, width, height);
     c.strokeStyle = `rgba(${rgb},.10)`; c.lineWidth = .6;
     for (let j = -2; j <= 2; j++) {
       const offset = j * radius * .55;
@@ -79,6 +91,38 @@
     }
     c.strokeStyle = `rgba(${rgb},.18)`;
     c.beginPath(); c.ellipse(centerX, centerY, radius * 1.29, radius * .87, -.36, 0, Math.PI * 2); c.stroke();
+    // A second orbital ribbon gives the three systems a shared visual frame.
+    c.save(); c.setLineDash([2, 9]); c.lineDashOffset = -phase * 9;
+    c.strokeStyle = `rgba(${rgb},.20)`;
+    c.beginPath(); c.ellipse(centerX, centerY, radius * 1.36, radius * .67, .4, 0, Math.PI * 2); c.stroke(); c.restore();
+    if (ringAlpha > .01) {
+      for (let ring = 0; ring < 3; ring++) {
+        const scale = .63 + ring * .19, start = phase * (ring % 2 ? -.45 : .35) + ring * 2.1;
+        c.strokeStyle = `rgba(${rgb},${ringAlpha * .26})`; c.lineWidth = .8;
+        c.beginPath();
+        for (let i = 0; i <= 60; i++) {
+          const a = start + i / 60 * Math.PI * 1.6;
+          const p = project({x: Math.cos(a) * scale, y: Math.sin(a) * scale, z: .12 * Math.sin(a * 3 + phase)});
+          if (!i) c.moveTo(p.x, p.y); else c.lineTo(p.x, p.y);
+        }
+        c.stroke();
+        const p = project({x:Math.cos(start) * scale,y:Math.sin(start) * scale,z:.12 * Math.sin(start * 3 + phase)});
+        c.fillStyle = `rgba(${rgb},${ringAlpha * .85})`; c.fillRect(p.x - 2, p.y - 2, 4, 4);
+      }
+    }
+    if (meshAlpha > .01) {
+      // A bounded network of neighbouring particles suggests shared state.
+      for (let i = 0; i < count; i += 3) {
+        const a = project(points[i]);
+        for (let j = i + 3; j < count; j += 3) {
+          const distance = Math.hypot(points[i].x-points[j].x, points[i].y-points[j].y, points[i].z-points[j].z);
+          if (distance > .43) continue;
+          const b = project(points[j]);
+          c.strokeStyle = `rgba(${rgb},${meshAlpha * (.07 + (a.z+1) * .09)})`; c.lineWidth = .65;
+          c.beginPath(); c.moveTo(a.x,a.y); c.lineTo(b.x,b.y); c.stroke();
+        }
+      }
+    }
     if (graphAlpha > .01) {
       for (let column = 0; column < 3; column++) {
         for (let row = 0; row < 6; row++) {
@@ -88,7 +132,10 @@
             c.strokeStyle = `rgba(${rgb},${graphAlpha * .22})`; c.lineWidth = .75;
             c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(b.x, b.y); c.stroke();
             if (delta === 0) {
-              const progress = (phase * .34 + row * .13 - column * .24 + 10) % 1;
+              const progress = (phase * .34 + row * .13 - column * .24 + 10 + pulse * .17) % 1;
+              const glowX = a.x + (b.x-a.x) * progress, glowY = a.y + (b.y-a.y) * progress;
+              c.fillStyle = `rgba(${rgb},${graphAlpha * .09})`;
+              c.beginPath(); c.arc(glowX, glowY, 6, 0, Math.PI * 2); c.fill();
               c.fillStyle = `rgba(${rgb},${graphAlpha * .82})`;
               c.beginPath(); c.arc(a.x + (b.x-a.x) * progress, a.y + (b.y-a.y) * progress, 2.2, 0, Math.PI * 2); c.fill();
             }
@@ -106,6 +153,15 @@
     c.strokeStyle = `rgba(${rgb},.35)`; c.fillStyle = `rgb(${rgb})`;
     c.beginPath(); c.arc(px, py, 7, 0, Math.PI * 2); c.stroke();
     c.beginPath(); c.arc(px, py, 2.5, 0, Math.PI * 2); c.fill();
+    if (pulse > 0) {
+      const progress = 1 - pulse / 2.4;
+      for (let ring = 0; ring < 3; ring++) {
+        const t = progress * 1.6 - ring * .19;
+        if (t < 0 || t > 1) continue;
+        c.strokeStyle = `rgba(${rgb},${(1-t) * .55})`; c.lineWidth = 1.2;
+        c.beginPath(); c.ellipse(centerX,centerY,radius * (.15+t*1.4),radius * (.10+t*.97),-.18,0,Math.PI*2); c.stroke();
+      }
+    }
   }
   function animate(time) {
     frame = null;
@@ -113,10 +169,13 @@
     const dt = Math.min(time - previous || 16, 48); previous = time;
     const blend = 1 - Math.exp(-dt / 160);
     phase += dt * .0006;
+    pulse = Math.max(0, pulse - dt / 1000);
     smoothX += (pointerX - smoothX) * blend * .35; smoothY += (pointerY - smoothY) * blend * .35;
     points.forEach((p, i) => { const target = shapes[mode][i]; p.x += (target.x-p.x)*blend; p.y += (target.y-p.y)*blend; p.z += (target.z-p.z)*blend; });
     color.forEach((v, i) => { color[i] += (modes[mode].color[i]-v)*blend; });
     graphAlpha += ((mode === 'ai' ? 1 : 0)-graphAlpha)*blend;
+    meshAlpha += ((mode === 'play' ? 1 : 0)-meshAlpha)*blend;
+    ringAlpha += ((mode === 'privacy' ? 1 : 0)-ringAlpha)*blend;
     draw(); frame = requestAnimationFrame(animate);
   }
   function requestDraw() {
@@ -155,6 +214,14 @@
   }
   if (canvas && host && context) {
     host.classList.add('canvas-ready');
+    if (sparkControl) {
+      sparkControl.hidden = false;
+      sparkControl.addEventListener('click', () => {
+        if (paused) return;
+        pulse = 2.4;
+        requestDraw();
+      });
+    }
     host.addEventListener('pointermove', event => {
       if (paused || event.pointerType === 'touch') return;
       const rect = canvas.getBoundingClientRect();

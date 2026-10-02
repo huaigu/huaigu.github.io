@@ -28,3 +28,11 @@ html.motion-paused{scroll-behavior:auto}
 @media(max-width:520px){.skills-lab{height:530px;margin-top:29px}.skills-lab #orbit-canvas{height:259px}.skill-switch{left:0;right:0;gap:5px}.skill-switch button{font-size:11px;gap:5px;padding:8px 5px}.skill-symbol{font-size:14px}.skills-lab .orbital-top{left:8px}.skills-lab .motion-toggle{right:4px}.skills-lab .top-left{left:8px}.skills-lab .bottom-right{right:8px}.skill-detail{left:8px;right:8px}.skill-detail #orbit-caption{font-size:22px}.skill-detail #skill-stack{font-size:11px}.lab-axis{left:9px;right:9px}}
 @media(max-width:359px){.skills-lab .lab-interactive{display:none}.skill-switch button{font-size:10px;padding:8px 4px;gap:3px}.skill-symbol{font-size:13px}.skill-detail #orbit-caption{font-size:20px}.skill-detail #skill-stack{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.skill-switch button{transition:none}html{scroll-behavior:auto}}
+
+/* A direct, keyboard-accessible way to play with the particle field. */
+.lab-spark{position:absolute;top:303px;left:50%;translate:-50% 0;z-index:3;min-height:30px;padding:6px 12px;border:1px solid #d7dfd0;border-radius:20px;background:#fafbf7e8;color:var(--lab-accent);font-size:9px;letter-spacing:.4px;white-space:nowrap;transition:background .2s,border-color .2s,box-shadow .2s}
+.lab-spark[hidden]{display:none}.lab-spark:hover:not(:disabled){background:#fff;border-color:var(--lab-accent);box-shadow:0 2px 12px #376f4915}.lab-spark:disabled{opacity:.5}
+@media(min-width:1440px){.lab-spark{top:323px}}
+@media(max-width:760px){.lab-spark{top:277px}}
+@media(prefers-reduced-motion:reduce){.lab-spark{transition:none}}
+html.motion-paused .lab-spark{transition:none}

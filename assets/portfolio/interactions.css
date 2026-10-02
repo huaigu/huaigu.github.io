@@ -1,0 +1,127 @@
+/* Progressive, finite interactions. Parent-card tilt is independent from the
+   project illustrations' own transforms and animation loops. */
+.portfolio-interactions-ready .interaction-tilt-target {
+  transform-origin: center;
+  transition: transform .48s cubic-bezier(.2,.7,.25,1), filter .3s;
+}
+.portfolio-interactions-ready .interaction-tilt-target::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: radial-gradient(circle 230px at var(--interaction-light-x,50%) var(--interaction-light-y,45%),#ffffff75,transparent 72%);
+  opacity: 0;
+  transition: opacity .35s;
+}
+@media (hover:hover) and (pointer:fine) {
+  .portfolio-interactions-ready .interaction-tilt-target.is-interaction-hovered {
+    transform: perspective(1100px) rotateX(var(--interaction-rotate-x,0deg)) rotateY(var(--interaction-rotate-y,0deg));
+    transition-duration: .16s,.3s;
+    will-change: transform;
+  }
+  .portfolio-interactions-ready .interaction-tilt-target.is-interaction-hovered::after { opacity: .55; }
+}
+
+.portfolio-interactions-ready .button.primary {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: background .25s,transform .3s cubic-bezier(.2,.7,.25,1),box-shadow .3s;
+}
+.portfolio-interactions-ready .button.primary::after {
+  content: '';
+  position: absolute;
+  inset: -20% auto -20% -70%;
+  width: 60%;
+  z-index: -1;
+  background: linear-gradient(100deg,transparent,#ffffff26,transparent);
+  transform: skewX(-15deg);
+  transition: left .65s cubic-bezier(.2,.7,.25,1);
+  pointer-events: none;
+}
+.portfolio-interactions-ready .button.primary:is(:hover,:focus-visible) { box-shadow: 0 7px 18px #28473114; }
+.portfolio-interactions-ready .button.primary:is(:hover,:focus-visible)::after { left: 115%; }
+.portfolio-interactions-ready :is(.button.primary,.text-link,.stats-link,.nav-github) > span[aria-hidden="true"],
+.portfolio-interactions-ready .repo-arrow,
+.portfolio-interactions-ready .project-body h3 a > span[aria-hidden="true"] {
+  display: inline-block;
+  transition: transform .3s cubic-bezier(.2,.7,.25,1);
+}
+.portfolio-interactions-ready :is(.button.primary,.text-link,.stats-link,.nav-github):is(:hover,:focus-visible) > span[aria-hidden="true"],
+.portfolio-interactions-ready .repo-name:is(:hover,:focus-visible) .repo-arrow,
+.portfolio-interactions-ready .project-body h3 a:is(:hover,:focus-visible) > span[aria-hidden="true"] { transform: translate(3px,-3px); }
+.portfolio-interactions-ready .hero-actions .button.primary:is(:hover,:focus-visible) > span[aria-hidden="true"] { transform: translate(3px,3px); }
+
+.portfolio-interactions-ready .interaction-hero-enter {
+  animation: interaction-hero .8s cubic-bezier(.2,.7,.25,1) var(--interaction-delay,0ms) both;
+}
+.portfolio-interactions-ready .interaction-repo-enter {
+  animation: interaction-repository .48s cubic-bezier(.2,.7,.25,1) var(--interaction-delay,0ms) both;
+}
+.portfolio-interactions-ready .interaction-heading { position: relative; }
+.portfolio-interactions-ready .interaction-heading::after {
+  content: '';
+  position: absolute;
+  left: 1px;
+  bottom: -16px;
+  width: 52px;
+  height: 2px;
+  background: currentColor;
+  opacity: .2;
+  transform-origin: left center;
+  pointer-events: none;
+}
+.portfolio-interactions-ready .interaction-heading-reveal::after {
+  animation: interaction-underline .75s cubic-bezier(.2,.7,.25,1) var(--interaction-delay,0ms) both;
+}
+@keyframes interaction-hero {
+  from { opacity: .55; translate: 0 16px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes interaction-repository {
+  from { opacity: .7; translate: 0 9px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes interaction-underline {
+  from { transform: scaleX(.08); opacity: .08; }
+  to { transform: scaleX(1); opacity: .2; }
+}
+
+/* Pause settles entrances instead of freezing words partway into their place. */
+.portfolio-interactions-ready:is(.motion-paused,.interactions-document-hidden) .interaction-tilt-target,
+.portfolio-interactions-ready:is(.motion-paused,.interactions-document-hidden) .button.primary {
+  transform: none !important;
+  transition: none !important;
+}
+.portfolio-interactions-ready:is(.motion-paused,.interactions-document-hidden) :is(.interaction-tilt-target,.button.primary)::after {
+  opacity: 0 !important;
+  transition: none !important;
+}
+.portfolio-interactions-ready:is(.motion-paused,.interactions-document-hidden) :is(.interaction-hero-enter,.interaction-repo-enter),
+.portfolio-interactions-ready:is(.motion-paused,.interactions-document-hidden) .interaction-heading-reveal::after { animation: none !important; }
+.portfolio-interactions-ready:is(.motion-paused,.interactions-document-hidden) :is(.button.primary,.text-link,.stats-link,.nav-github) > span[aria-hidden="true"],
+.portfolio-interactions-ready:is(.motion-paused,.interactions-document-hidden) .repo-arrow,
+.portfolio-interactions-ready:is(.motion-paused,.interactions-document-hidden) .project-body h3 a > span[aria-hidden="true"] {
+  transform: none !important;
+  transition: none !important;
+}
+@media (prefers-reduced-motion:reduce) {
+  .portfolio-interactions-ready .interaction-tilt-target,
+  .portfolio-interactions-ready .button.primary {
+    transform: none !important;
+    transition: none !important;
+  }
+  .portfolio-interactions-ready :is(.interaction-tilt-target,.button.primary)::after {
+    opacity: 0 !important;
+    transition: none !important;
+  }
+  .portfolio-interactions-ready :is(.interaction-hero-enter,.interaction-repo-enter),
+  .portfolio-interactions-ready .interaction-heading-reveal::after { animation: none !important; }
+  .portfolio-interactions-ready :is(.button.primary,.text-link,.stats-link,.nav-github) > span[aria-hidden="true"],
+  .portfolio-interactions-ready .repo-arrow,
+  .portfolio-interactions-ready .project-body h3 a > span[aria-hidden="true"] {
+    transform: none !important;
+    transition: none !important;
+  }
+}

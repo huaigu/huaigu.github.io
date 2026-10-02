@@ -19,6 +19,19 @@
       document.querySelectorAll(selector).forEach(element => element.classList.add('motion-loop'));
     }
 
+    function decoration(className) {
+      const element = document.createElement('span');
+      element.className = className;
+      element.setAttribute('aria-hidden', 'true');
+      return element;
+    }
+
+    function svgElement(tag, attributes) {
+      const element = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      Object.entries(attributes).forEach(([name, value]) => element.setAttribute(name, value));
+      return element;
+    }
+
     document.querySelectorAll('.player-screen').forEach(screen => {
       if (screen.querySelector('.motion-stream-track')) return;
       const track = document.createElement('span');
@@ -28,6 +41,75 @@
       fill.className = 'motion-stream-fill motion-loop';
       track.append(fill);
       screen.append(track);
+
+      const waveform = decoration('motion-equalizer');
+      for (let index = 0; index < 22; index += 1) {
+        const bar = decoration('motion-equalizer-bar motion-loop');
+        // Different fixed phases create a calm waveform, without a JS ticker.
+        bar.style.animationDelay = `${-(index * 0.27 + (index % 4) * 0.38)}s`;
+        bar.style.animationDuration = `${1.8 + (index % 5) * 0.29}s`;
+        bar.style.height = `${8 + ((index * 7) % 13)}px`;
+        waveform.append(bar);
+      }
+      screen.append(waveform);
+    });
+
+    document.querySelectorAll('.forecast-visual').forEach(visual => {
+      if (visual.querySelector('.motion-forecast-line')) return;
+      // A decorative signal, not historical or live price data. It is hidden
+      // from assistive technology and introduces no values or financial claims.
+      const svg = svgElement('svg', {
+        class: 'motion-forecast-line', viewBox: '0 0 520 230',
+        'aria-hidden': 'true', focusable: 'false', preserveAspectRatio: 'none',
+      });
+      const path = 'M-20 166 L34 166 62 142 94 154 131 112 165 131 199 88 234 108 268 97 301 117 337 78 375 103 408 80 444 93 480 54 540 68';
+      svg.append(
+        svgElement('path', { d: path, fill: 'none', stroke: '#ac957c', 'stroke-width': '1', opacity: '.29' }),
+        svgElement('path', {
+          d: path, class: 'motion-forecast-signal motion-loop', fill: 'none',
+          stroke: '#997249', 'stroke-width': '2', 'stroke-linecap': 'round',
+          pathLength: '100', 'stroke-dasharray': '9 91',
+        }),
+      );
+      visual.prepend(svg);
+    });
+
+    document.querySelectorAll('.number-visual').forEach(visual => {
+      if (visual.querySelector('.motion-cipher-field')) return;
+      const svg = svgElement('svg', {
+        class: 'motion-cipher-field', viewBox: '0 0 420 280',
+        'aria-hidden': 'true', focusable: 'false',
+      });
+      [-19, 23].forEach((rotation, index) => {
+        const geometry = { cx: '210', cy: '140', rx: '183', ry: '96', fill: 'none', transform: `rotate(${rotation} 210 140)` };
+        svg.append(svgElement('ellipse', { ...geometry, stroke: '#6887a1', 'stroke-width': '1', opacity: '.24' }));
+        const signal = svgElement('ellipse', {
+          ...geometry, class: 'motion-cipher-signal motion-loop', stroke: '#557a9b',
+          'stroke-width': '3', 'stroke-linecap': 'round', 'stroke-dasharray': '3 109',
+        });
+        signal.style.animationDirection = index ? 'reverse' : 'normal';
+        signal.style.animationDelay = `${index * -4}s`;
+        svg.append(signal);
+      });
+      visual.prepend(svg);
+    });
+
+    document.querySelectorAll('.proof-connector').forEach((connector, index) => {
+      if (connector.querySelector('.motion-proof-rail')) return;
+      const rail = decoration('motion-proof-rail');
+      const packet = decoration('motion-proof-packet motion-loop');
+      packet.style.animationDelay = `${0.45 + (index % 2) * 2.1}s`;
+      rail.append(packet);
+      connector.append(rail);
+    });
+
+    document.querySelectorAll('.workflow-steps li:not(:last-child)').forEach((step, index) => {
+      if (step.querySelector('.motion-workflow-rail')) return;
+      const rail = decoration('motion-workflow-rail');
+      const packet = decoration('motion-workflow-packet motion-loop');
+      packet.style.animationDelay = `${0.4 + (index % 2) * 3}s`;
+      rail.append(packet);
+      step.append(rail);
     });
 
     document.querySelectorAll('.snake-board svg').forEach(svg => {
@@ -49,7 +131,7 @@
       svg.querySelectorAll('rect').forEach(food => food.classList.add('motion-snake-food', 'motion-loop'));
     });
 
-    animate('.round-clock, .direction, .number-tile, .proof-step, .workflow-number');
+    animate('.play-symbol, .round-clock, .direction, .number-tile, .proof-step, .workflow-number');
 
     function onMotionChange(event) {
       paused = typeof event.detail?.paused === 'boolean'
