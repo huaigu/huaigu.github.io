@@ -12,6 +12,7 @@ Open `index.html` directly, or serve the repository with `python -m http.server 
 
 - Responsive, light-theme portfolio with an interactive technology lab: particle transitions between AI routing, private compute, and real-time shared-state diagrams, grounded in actual project technologies.
 - A keyboard-accessible “Send a pulse” interaction adds ripples to the hero particle field; orbital trails, privacy rings, and a connected multiplayer mesh illustrate the selected theme.
+- Scroll-driven depth makes project illustrations drift, rotate, and gently scale as you move through the page, with chapter progress rails and staggered detail entrances. Native scrolling remains unchanged; mobile movement is lighter.
 - Project-specific motion, fine-pointer card tilt and lighting, staged entrances, repository-result reveals, and a reading-progress line. The global motion control pauses the canvas and all decorative loops; reduced-motion preferences and offscreen pausing are respected. No animation dependencies or live-metric claims.
 - Five selected projects: ShelbyFans, UpDown60, NumberVerse Arena, ProofQuest, and Neon Snake Glitch Arena.
 - A dedicated Applied AI section introduces Laya in English and Chinese.
