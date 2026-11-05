@@ -31,7 +31,7 @@
     });
   });
 
-  const metadata = [
+  const metadata = document.body.hasAttribute('data-writing-page') ? [] : [
     {
       element: document.querySelector('title'),
       property: 'textContent',

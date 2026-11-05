@@ -1,0 +1,13 @@
+[
+  {
+    "slug": "vibe42-architecture",
+    "source": "vibe42-architecture.md",
+    "title": "Vibe42 底层架构拆解与横评：对比 Paseo、Orca 与自建开源栈的工程取舍",
+    "summary": "把 Coding Agent 带出工位：从终端透传、连接与加密，到工作区隔离，比较 Vibe42、Paseo、Orca 和自建工具栈的工程取舍。",
+    "date": "2026-11-04",
+    "language": "zh-CN",
+    "category": "技术研究",
+    "categoryEn": "Technical research",
+    "tags": ["AI Agents", "Developer tools", "Architecture"]
+  }
+]
