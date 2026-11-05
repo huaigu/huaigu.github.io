@@ -32,12 +32,27 @@ Topic categories are editorial heuristics, and projects can belong to several. A
 - Identity: public GitHub account/repository history; `huaigu/huaigu` profile; project READMEs corroborate Bojack/0xbojack.
 - Features: `huaigu/ShelbyFans`, `huaigu/UpDown60`, `huaigu/number-verse-arena`, `huaigu/proofquest-web3-adventures`, `huaigu/neon-snake-glitch-arena`.
 - Applied AI: `huaigu/laya-article-examples`.
-- Writing: existing GitHub Pages articles are preserved in place; the homepage notes section is removed.
+- Writing: new AI and engineering articles live in `articles/` as public Markdown, with static reading pages at `/writing/`. The original Solidity articles are preserved at their existing URLs.
 - Animation references found with Exa: [Typed.js](https://mattboldt.github.io/typed.js/), [GSAP SplitText](https://gsap.com/docs/v3/Plugins/SplitText/), and [Motion examples](https://motion.dev/examples). The implementations use native JavaScript and CSS.
 - Design research: [Anthony Fu](https://antfu.me/), [Paco Coursey](https://paco.me/), [Lee Robinson](https://leerob.com/), and [Jhey Tompkins](https://www.jhey.dev/). Used for storytelling/structure inspiration; no code or assets copied.
 
 The repository archive contains public repositories only. At the owner’s request, the featured selection also includes a high-level introduction to private project ShelbyFans, clearly labelled “Private source” without a source link. No private code, credentials, employment/location claims, invented outcomes, or contact details from account authentication are published.
 
+## Writing articles
+
+Article text stays in Markdown. The homepage, article index, and reading pages are generated ahead of time, so visitors can read without JavaScript or GitHub API requests. The site language switch changes navigation and controls; each article keeps its original language.
+
+To publish another article:
+
+1. Add `articles/<slug>.md` with a single H1 title followed by the article.
+2. Add its metadata to `articles/catalog.json`: `slug`, `source`, `title` (matching the H1), `summary`, `date` (`YYYY-MM-DD`), `language` (`zh-CN` or `en`), `category`, and `categoryEn`.
+3. With Node 20 or newer, run `npm ci` once, then `npm run build:articles`.
+4. Run `npm run check:articles` and review the generated homepage and `writing/` files. Commit those outputs together with the Markdown and catalog changes.
+
+Only the build uses `marked`; the published reading pages have no Markdown runtime dependency. Raw HTML in Markdown is escaped, unsafe link schemes are excluded, tables can scroll independently, and headings have stable section links. Keep the existing `<!-- writing:start -->` and `<!-- writing:end -->` homepage markers.
+
+The Vibe42 article includes its technical sources and the SHA-256 of the public installer package used for static verification. Vendor installers and binaries are not redistributed in this repository.
+
 ## Deployment
 
-The `master` branch publishes through the existing GitHub Pages setup. Keep the `CNAME` file absent so the site stays at `https://huaigu.github.io/`. The repository currently contains generated static output; if an external Hexo deployment regenerates `index.html`, update that source/deployment process before publishing this redesign.
+The `master` branch publishes the checked-in static output through the existing GitHub Pages setup. `.nojekyll` preserves the generated routes and Markdown source files without an additional Jekyll conversion. Keep the `CNAME` file absent so the site stays at `https://huaigu.github.io/`. The repository currently contains generated static output; if an external Hexo deployment regenerates `index.html`, update that source/deployment process before publishing this redesign.

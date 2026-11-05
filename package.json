@@ -1,0 +1,11 @@
+{
+  "name": "huaigu-portfolio",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build:articles": "node scripts/build-articles.mjs",
+    "check:articles": "node scripts/build-articles.mjs --check"
+  },
+  "devDependencies": { "marked": "18.1.3" }
+}
