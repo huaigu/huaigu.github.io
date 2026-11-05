@@ -1,6 +1,6 @@
 # Vibe42 底层架构拆解与横评：对比 Paseo、Orca 与自建开源栈的工程取舍
 
-> 核对日期：2026 年 11 月 4 日。本文基于公开文档、开源仓库和 Vibe42 v0.13.3 Linux 安装包的静态检查；涉及性能、耗电和打洞成功率的描述不代表独立实测。
+> 资料核对日期：2026 年 11 月 4 日。本文参考官网文档、开源仓库，并结合安装包分析。
 
 随着 Claude Code、OpenAI Codex CLI、Gemini CLI、OpenCode、Pi 等命令行 AI 编程工具（Coding Agent）逐渐进入日常开发流程，开发者的交互重心正在从“在 IDE 里手写代码”转向“在终端里编排、审查和审批多个并行 Agent 任务”。这一转变催生了一个非常具体的工程刚需：**如何在离开工位（使用手机、平板或异地设备）时，低延迟、不断连地查看和调度家里或服务器上正在运行的本地 Agent？**
 
@@ -35,7 +35,7 @@
 家用宽带和移动蜂窝网络普遍处于运营商 NAT（网络地址转换）或防火墙之后，没有公网 IP，外部主动发起的入站连接常会被拦截。[Vibe42](https://vibe42.ai/zh-HANS) 采用的是典型的**“先中转保连通，后打洞降成本”**策略：
 
 * **双向主动出站（Relay 打底）**：宿主机后台服务与客户端先主动连接官方边缘接入点（AP）。[连接文档](https://vibe42.ai/docs/how-it-works/connections)列出了香港、洛杉矶、东京、法兰克福等区域，以及 `QUIC → TCP → WSS` 的尝试顺序；仅允许出站 TCP 443 的网络可以使用 WSS。这样不需要用户手动配置公网 IP 或路由器端口映射，但仍依赖所在网络允许相应出站连接。
-* **直连与 DCUtR 打洞（Hole Punching）**：中转建立后，原生端和 CLI 在后台交换候选地址，并尝试直拨和 NAT 打洞；成功后切换到 P2P，失败则继续中转。[官网文档](https://vibe42.ai/docs/how-it-works/connections)确认了这条路径。在公开的 **v0.13.3 Linux Server / CLI 安装包**中，静态检查也检出了 `/libp2p/dcutr`、`libp2p-dcutr-0.14.1`、`/quic-v1` 和 `/noise` 字符串，支持“集成了 libp2p DCUtR 相关组件”的判断。DCUtR 的作用是协调双方建立直连；包内存在这些组件，不代表每次会话都能打洞成功，也不能据此得出特定运营商网络的成功率。
+* **直连与 DCUtR 打洞（Hole Punching）**：中转建立后，原生端和 CLI 在后台交换候选地址，并尝试直拨和 NAT 打洞；成功后切换到 P2P，失败则继续中转。[官网文档](https://vibe42.ai/docs/how-it-works/connections)介绍了这条路径，安装包分析也能看到 libp2p DCUtR 等相关组件。DCUtR 负责协调双方建连，实际能否打通仍取决于网络环境。
 * **三通道使用独立连接**：[连接文档](https://vibe42.ai/docs/how-it-works/connections)明确区分 `control`（元数据与管理）、`terminal`（终端交互）和 `file`（文件浏览、预览与传输）三条连接，而不只是给同一字节流贴三种消息标签。它们可以分别处于直连或中转状态。分开连接有助于减少文件传输与终端输入之间的排队干扰，但共享带宽、拥塞和设备负载仍会影响回显延迟。
 
 ### 2. 安全层：Noise 端到端加密与信任边界
@@ -170,10 +170,4 @@
 | Paseo 架构与扩展 | [项目 README](https://github.com/getpaseo/paseo/blob/main/README.zh-CN.md)、[连接文档](https://paseo.sh/docs/connectivity)、[Worktree 文档](https://paseo.sh/docs/worktrees)。 |
 | Orca 定位与移动端 | [项目 README](https://github.com/stablyai/orca/blob/main/docs/readme/README.zh-CN.md)、[Mobile README](https://github.com/stablyai/orca/blob/main/mobile/README.md)。 |
 
-本次还下载并核对了[官方安装脚本](https://get.vibe42.app/install.sh)指向的 **v0.13.3 / x86_64-unknown-linux-musl Server / CLI 包**。安装包为 66,688,333 字节，SHA-256 与脚本公布值一致：
-
-```text
-e8f26560e0951da5c29428b0d0115cc4412fbfe7e5a3d9475e9d2dae48c6787d
-```
-
-仅提取公开包中的文件并检查二进制字符串，没有运行安装脚本、启动服务或进行账号配对。`v42` 与 `v42-companion` 均检出 `/libp2p/dcutr`、`libp2p-dcutr-0.14.1`、`/quic-v1` 与 `/noise`。这支持组件集成的判断，不证明运行时所有路径都会启用，也不构成安全审计或网络性能测试。
+本文也分析了 Vibe42 的官方安装包，用来核对它使用的网络组件。

@@ -51,7 +51,7 @@ To publish another article:
 
 Only the build uses `marked`; the published reading pages have no Markdown runtime dependency. Raw HTML in Markdown is escaped, unsafe link schemes are excluded, tables can scroll independently, and headings have stable section links. Keep the existing `<!-- writing:start -->` and `<!-- writing:end -->` homepage markers.
 
-The Vibe42 article includes its technical sources and the SHA-256 of the public installer package used for static verification. Vendor installers and binaries are not redistributed in this repository.
+The Vibe42 article draws on official documentation, open-source repositories, and analysis of the public installer package. Vendor installers and binaries are not redistributed in this repository.
 
 ## Deployment
 
